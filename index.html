@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>👩‍💼 Employee Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 14px;
+    }
+    button {
+      cursor: pointer;
+      background: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    .delete-btn {
+      background: crimson;
+      border: none;
+      color: white;
+      padding: 5px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>👩‍💼 Employee Management System</h1>
+
+  <form id="employeeForm">
+    <input type="text" id="name" placeholder="Employee Name" required>
+    <input type="number" id="age" placeholder="Age" required>
+    <input type="text" id="role" placeholder="Role" required>
+    <button type="submit">Add Employee</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Role</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="employeeTable">
+      <tr>
+        <td colspan="5">No employees yet</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    let employees = [];
+    let nextId = 1;
+
+    const form = document.getElementById("employeeForm");
+    const tableBody = document.getElementById("employeeTable");
+
+    // Render employee table
+    function renderEmployees() {
+      tableBody.innerHTML = "";
+      if (employees.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">No employees yet</td></tr>';
+        return;
+      }
+      employees.forEach(emp => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${emp.id}</td>
+          <td>${emp.name}</td>
+          <td>${emp.age}</td>
+          <td>${emp.role}</td>
+          <td><button class="delete-btn" onclick="deleteEmployee(${emp.id})">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Add employee
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const age = parseInt(document.getElementById("age").value);
+      const role = document.getElementById("role").value.trim();
+
+      if (!name || !age || !role) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      employees.push({ id: nextId++, name, age, role });
+      form.reset();
+      renderEmployees();
+    });
+
+    // Delete employee
+    function deleteEmployee(id) {
+      employees = employees.filter(emp => emp.id !== id);
+      renderEmployees();
+    }
+
+    // Expose deleteEmployee to window for inline onclick
+    window.deleteEmployee = deleteEmployee;
+
+    // Initial render
+    renderEmployees();
+  </script>
+
+</body>
+</html>
